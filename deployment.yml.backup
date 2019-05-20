@@ -7,9 +7,9 @@ spec:
     app: articulate
   ports:
   - protocol: TCP
-    port: 80
-    targetPort: 8080
-  type: LoadBalancer
+    port: 8080
+    nodePort: 30002
+  type: NodePort
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
         - name: articulate
-          image: CONTAINER_IMAGE
+          image: kanwaljitkhurmi/mb3:articulateLatest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
