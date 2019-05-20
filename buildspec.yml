@@ -16,6 +16,9 @@ phases:
         - export KUBECONFIG=$HOME/.kube/config
   build:
     commands:
+      - echo $M2_HOME
+      - echo $JAVA_HOME
+      - mvn clean install
       - docker build --tag $REPOSITORY_URI:$TAG .
 
   post_build:

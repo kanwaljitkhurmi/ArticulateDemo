@@ -1,6 +1,6 @@
 FROM openjdk:8-jdk-alpine
 VOLUME /tmp
-COPY target/articulate-1.0.jar articulate.jar
+COPY target/articulateDemo-0.0.1.jar articulateDemo.jar
 ENV JAVA_OPTS=""
-ENTRYPOINT exec java -jar /articulate.jar --debug
+ENTRYPOINT exec java -jar /articulateDemo.jar --debug
 EXPOSE 8080
