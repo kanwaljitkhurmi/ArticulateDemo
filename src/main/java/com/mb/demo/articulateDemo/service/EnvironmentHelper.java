@@ -34,6 +34,8 @@ public class EnvironmentHelper {
     } else {
       modelMap.put("containerAddr", request.getLocalAddr() + ":" + request.getLocalPort());
     }
+    
+    modelMap.put("containerAddr", System.getenv("MY_POD_IP"));
 
     String instanceIndex = getVcapApplicationMap().getOrDefault(
         "instance_index", "no index environment variable").toString();
