@@ -8,7 +8,7 @@ spec:
   ports:
   - protocol: TCP
     port: 80
-    targetPort: 8080
+    targetPort: 8082
   type: LoadBalancer
 ---
 apiVersion: apps/v1
@@ -30,6 +30,6 @@ spec:
           image: CONTAINER_IMAGE
           imagePullPolicy: Always
           ports:
-            - containerPort: 8080
+            - containerPort: 8082
       imagePullSecrets:
         - name: myregistrykey
