@@ -35,7 +35,7 @@ public class EnvironmentHelper {
       modelMap.put("containerAddr", request.getLocalAddr() + ":" + request.getLocalPort());
     }
     
-    modelMap.put("containerAddr", System.getenv("MY_POD_IP"));
+  
 
     String instanceIndex = getVcapApplicationMap().getOrDefault(
         "instance_index", "no index environment variable").toString();
@@ -64,6 +64,10 @@ public class EnvironmentHelper {
     logger.debug("Java Version (filtered): {}", javaVersion);
 
     modelMap.put("javaVersion", javaVersion);
+    modelMap.put("MY_POD_IP", System.getenv("MY_POD_IP"));
+    modelMap.put("MY_NODE_NAME", System.getenv("MY_NODE_NAME"));
+    modelMap.put("MY_POD_NAME", System.getenv("MY_POD_NAME"));
+   
     return modelMap;
   }
 
