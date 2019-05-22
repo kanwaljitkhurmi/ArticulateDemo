@@ -18,17 +18,21 @@ phases:
   pre_build:
       commands:
         - TAG="$REPOSITORY_NAME.$REPOSITORY_BRANCH.$ENVIRONMENT_NAME.$(date +%Y-%m-%d.%H.%M.%S).$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | head -c 8)"
+        - TAGXray="$TAG$(echo Xray)"
         - sed -i 's@CONTAINER_IMAGE@'"$REPOSITORY_URI:$TAG"'@' deployment.yml
+        - sed -i 's@CONTAINER_IMAGE@'"$REPOSITORY_URI:$TAGXray"'@' deploymentXray.yml
         - $(aws ecr get-login --no-include-email)
         - export KUBECONFIG=$HOME/.kube/config
   build:
     commands:
       - mvn install
-      - docker build --tag $REPOSITORY_URI:$TAG .
+      - docker build --file Dockerfile --tag $REPOSITORY_URI:$TAG .
+      - docker build --file DockerfileXray --tag $REPOSITORY_URI:$TAGXray .
 
   post_build:
     commands:
       - docker push $REPOSITORY_URI:$TAG
+      - docker push $REPOSITORY_URI:$TAGXray
       - CREDENTIALS=$(aws sts assume-role --role-arn $EKS_KUBECTL_ROLE_ARN --role-session-name codebuild-kubectl --duration-seconds 900)
       - export AWS_ACCESS_KEY_ID="$(echo ${CREDENTIALS} | jq -r '.Credentials.AccessKeyId')"
       - export AWS_SECRET_ACCESS_KEY="$(echo ${CREDENTIALS} | jq -r '.Credentials.SecretAccessKey')"
@@ -36,6 +40,7 @@ phases:
       - export AWS_EXPIRATION=$(echo ${CREDENTIALS} | jq -r '.Credentials.Expiration')
       - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --role-arn $EKS_KUBECTL_ROLE_ARN
       - kubectl apply -f deployment.yml
+      - kubectl apply -f deploymentXray.yml
       - printf '[{"name":"deployment","imageUri":"%s"}]' $REPOSITORY_URI:$TAG > build.json
 artifacts:
   files: build.json
