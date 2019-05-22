@@ -34,7 +34,7 @@
 					<div class="panel-body">
 						<p>
 							You've clicked on the <i><b>Kill</b></i> button. If you're not
-							running on PCF you're probably dead.
+							running on EKS you're probably dead.
 						</p>
 						<p>If running in Kubernetes EKS,  you can check the application instance
 							index that got the kill request with <code>cf events</code>.</p>
@@ -58,12 +58,12 @@
 						<div class="alert alert-danger" role="alert">
 							<b>Attention!</b> Before clicking on <i><b>kill</b></i> you may
 							want to ensure you have at least 2 application instances (HA)
-							configured. Otherwise be ready to wait a minute or so until PCF
+							configured. Otherwise be ready to wait a minute or so until EKS
 							auto-recovers the application.
 						</div>
 						<p>The application instance and container showed is not the
 							one necessarily being killed (unless you have one instance, of
-							course). PCF will load balance the request, however, we designed
+							course). EKS will load balance the request, however, we designed
 							the application to return with the application information prior
 							to terminating itself.</p>
 					</div>

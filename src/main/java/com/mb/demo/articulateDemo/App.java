@@ -1,5 +1,7 @@
 package com.mb.demo.articulateDemo;
 
+import com.amazonaws.xray.javax.servlet.AWSXRayServletFilter;
+import com.amazonaws.xray.strategy.DynamicSegmentNamingStrategy;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.SpringApplication;
@@ -13,6 +15,8 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.client.RestTemplate;
 
 import javax.net.ssl.*;
+import javax.servlet.Filter;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
@@ -33,6 +37,22 @@ public class App {
   public static void main(String[] args) {
     SpringApplication.run(App.class, args);
   }
+  
+//  @Bean
+//  public Filter TracingFilter() {
+//	    return new AWSXRayServletFilter(new DynamicSegmentNamingStrategy("Index", "/"));
+//  }
+  
+  @Bean
+  public Filter TracingFilter1() {
+    return new AWSXRayServletFilter("General");
+  }
+  
+//  @Bean
+//  public Filter TracingFilterService() {
+//	    return new AWSXRayServletFilter(new DynamicSegmentNamingStrategy("Service", "/services"));
+//  }
+
 
   @Bean
   public RestTemplate restTemplate() {
