@@ -45,11 +45,11 @@ public class ArticulateController {
   @ResponseBody
   public ResponseEntity svc(HttpServletRequest request, Model model) throws Exception {
     addAppEnv(request, model);
-    for(int i=0;i<10000000;i++) {
+    for(int i=0;i<1000000;i++) {
     	System.out.println("Testing data");
     }
     
-    Thread.sleep(10000);
+
     
     return new ResponseEntity("All OK", HttpStatus.OK);
   }
