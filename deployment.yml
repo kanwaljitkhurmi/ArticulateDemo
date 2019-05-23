@@ -20,9 +20,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: articulate
-  labels:
-    app: articulate
+  name: articulated
   namespace: articulate-ns
 spec:
   selector:
@@ -81,7 +79,7 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: articulate
+    name: articulated
   minReplicas: 1
   maxReplicas: 10
   targetCPUUtilizationPercentage: 10
