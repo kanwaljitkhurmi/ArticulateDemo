@@ -19,16 +19,22 @@ spec:
   selector:
       matchLabels:
         app: articulate
-  replicas: 3
+  replicas: 2
   template:
     metadata:
       labels:
         app: articulate
+      name: articulate
     spec:
       containers:
         - name: articulate
           image: CONTAINER_IMAGE
           imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 1
+            requests:
+              cpu: 0.2
           ports:
             - containerPort: 8082
           env:
@@ -54,3 +60,16 @@ spec:
                   fieldPath: spec.serviceAccountName
       imagePullSecrets:
         - name: myregistrykey
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: articulatehpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: articulate
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 20

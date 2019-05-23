@@ -1,15 +1,19 @@
 package com.mb.demo.articulateDemo.controller;
 
+import com.amazonaws.xray.AWSXRay;
 import com.mb.demo.articulateDemo.model.Attendee;
 import com.mb.demo.articulateDemo.service.AttendeeService;
 import com.mb.demo.articulateDemo.service.EnvironmentHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -36,12 +40,19 @@ public class ArticulateController {
     addAppEnv(request, model);
     return "index";
   }
+  
+  @RequestMapping("/svc")
+  @ResponseBody
+  public ResponseEntity svc(HttpServletRequest request, Model model) throws Exception {
+    addAppEnv(request, model);
+    return new ResponseEntity(HttpStatus.OK);
+  }
 
   @RequestMapping(value = "/basics", method = RequestMethod.GET)
   public String kill(HttpServletRequest request,
                      @RequestParam(value = "doit", required = false) boolean doit,
                      Model model) throws Exception {
-
+	  AWSXRay.getCurrentSegment().setUser("UserAWS");
     addAppEnv(request, model);
 
     if (doit) {
