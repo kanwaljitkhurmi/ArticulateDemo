@@ -43,7 +43,7 @@ spec:
           imagePullPolicy: Always
           resources:
             requests:
-              cpu: 0.1
+              cpu: 100m
           ports:
             - containerPort: 8082
           env:
@@ -70,7 +70,7 @@ spec:
       imagePullSecrets:
         - name: myregistrykey
 ---
-apiVersion: autoscaling/v1
+apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
   name: articulatehpa
@@ -82,4 +82,8 @@ spec:
     name: articulated
   minReplicas: 1
   maxReplicas: 10
-  targetCPUUtilizationPercentage: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      targetAverageUtilization: 10
