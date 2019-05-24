@@ -47,7 +47,8 @@ phases:
       - ROLE_NAME=$(aws iam get-instance-profile --instance-profile-name $INSTANCE_PROFILE_NAME | jq -r '.InstanceProfile.Roles[] | .RoleName')
       - echo "export ROLE_NAME=${ROLE_NAME}" >> ~/.bash_profile
       - echo "export INSTANCE_PROFILE_ARN=${INSTANCE_PROFILE_ARN}" >> ~/.bash_profile
-      - aws iam put-role-policy --role-name $ROLE_NAME --policy-name ASG-Policy-For-Worker --policy-document file:asg-plolicy.json
+      - aws iam put-role-policy --role-name $ROLE_NAME --policy-name ASG-Policy-For-Worker --policy-document file:asg-policy.json
+
       - kubectl apply -f metrics-server/deploy/1.8+/
       - kubectl apply -f deployment.yml
       - kubectl apply -f cluster_autoscaler.yml
