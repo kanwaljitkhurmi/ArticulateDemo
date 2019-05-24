@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: kube-system
+  name: articulate-ns
 ---
 kind: Service
 apiVersion: v1
 metadata:
   name: articulate-frontend
-  namespace: kube-system
+  namespace: articulate-ns
 spec:
   selector:
     app: articulate
@@ -21,7 +21,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: articulated
-  namespace: kube-system
+  namespace: articulate-ns
 spec:
   selector:
       matchLabels:
@@ -74,7 +74,7 @@ apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
   name: articulatehpa
-  namespace: kube-system
+  namespace: articulate-ns
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
