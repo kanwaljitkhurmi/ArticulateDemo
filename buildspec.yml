@@ -41,8 +41,14 @@ phases:
       - export AWS_SESSION_TOKEN="$(echo ${CREDENTIALS} | jq -r '.Credentials.SessionToken')"
       - export AWS_EXPIRATION=$(echo ${CREDENTIALS} | jq -r '.Credentials.Expiration')
       - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --role-arn $EKS_KUBECTL_ROLE_ARN
+
+      - INSTANCE_PROFILE_NAME=$(aws iam list-instance-profiles | jq -r '.InstanceProfiles[].InstanceProfileName' | grep nodegroup)
+      - INSTANCE_PROFILE_ARN=$(aws iam get-instance-profile --instance-profile-name $INSTANCE_PROFILE_NAME | jq -r '.InstanceProfile.Arn')
+      - ROLE_NAME=$(aws iam get-instance-profile --instance-profile-name $INSTANCE_PROFILE_NAME | jq -r '.InstanceProfile.Roles[] | .RoleName')
+      - echo "export ROLE_NAME=${ROLE_NAME}" >> ~/.bash_profile
+      - echo "export INSTANCE_PROFILE_ARN=${INSTANCE_PROFILE_ARN}" >> ~/.bash_profile
+      - aws iam put-role-policy --role-name $ROLE_NAME --policy-name ASG-Policy-For-Worker --policy-document file:asg-plolicy.json
       - kubectl apply -f metrics-server/deploy/1.8+/
-      - kubectl apply -f deploymentXray.yml
       - kubectl apply -f deployment.yml
       - kubectl apply -f cluster_autoscaler.yml
       - printf '[{"name":"deployment","imageUri":"%s"}]' $REPOSITORY_URI:$TAG > build.json
