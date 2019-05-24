@@ -43,7 +43,7 @@ spec:
           imagePullPolicy: Always
           resources:
             requests:
-              cpu: 200m
+              cpu: 1000m
           ports:
             - containerPort: 8082
           env:
@@ -86,4 +86,4 @@ spec:
   - type: Resource
     resource:
       name: cpu
-      targetAverageUtilization: 50
+      targetAverageUtilization: 10
