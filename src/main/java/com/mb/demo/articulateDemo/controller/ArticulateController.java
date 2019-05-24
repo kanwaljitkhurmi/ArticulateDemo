@@ -29,6 +29,7 @@ import java.util.concurrent.TimeUnit;
  * @author mborges
  */
 @Controller
+@XRayEnabled
 public class ArticulateController {
 
 
