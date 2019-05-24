@@ -9,7 +9,25 @@ import lombok.EqualsAndHashCode;
 @Builder
 public class Attendee {
 
-  public Long getId() {
+  public Attendee(Long id, String firstName, String lastName, String address, String city, String state,
+			String zipCode, String phoneNumber, String emailAddress) {
+		super();
+		this.id = id;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.address = address;
+		this.city = city;
+		this.state = state;
+		this.zipCode = zipCode;
+		this.phoneNumber = phoneNumber;
+		this.emailAddress = emailAddress;
+	}
+  
+  public Attendee() {
+	  
+	  
+  }
+public Long getId() {
 		return id;
 	}
 	public void setId(Long id) {
