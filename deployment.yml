@@ -26,7 +26,7 @@ spec:
   selector:
       matchLabels:
         app: articulate
-  replicas: 2
+  replicas: 1
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -81,7 +81,7 @@ spec:
     kind: Deployment
     name: articulated
   minReplicas: 1
-  maxReplicas: 10
+  maxReplicas: 30
   metrics:
   - type: Resource
     resource:
