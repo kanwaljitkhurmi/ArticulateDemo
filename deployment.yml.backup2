@@ -1,13 +1,7 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: articulate-ns
----
 kind: Service
 apiVersion: v1
 metadata:
   name: articulate-frontend
-  namespace: articulate-ns
 spec:
   selector:
     app: articulate
@@ -20,30 +14,27 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: articulated
-  namespace: articulate-ns
+  name: articulate
 spec:
   selector:
       matchLabels:
         app: articulate
-  replicas: 2
-  strategy:
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 0
-    type: RollingUpdate
+  replicas: 1
   template:
     metadata:
       labels:
         app: articulate
+      name: articulate
     spec:
       containers:
         - name: articulate
           image: CONTAINER_IMAGE
           imagePullPolicy: Always
           resources:
+            limits:
+              cpu: 1
             requests:
-              cpu: 200m
+              cpu: 0.1
           ports:
             - containerPort: 8082
           env:
@@ -70,20 +61,15 @@ spec:
       imagePullSecrets:
         - name: myregistrykey
 ---
-apiVersion: autoscaling/v2beta1
+apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
   name: articulatehpa
-  namespace: articulate-ns
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: articulated
+    name: articulate
   minReplicas: 1
   maxReplicas: 10
-  metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      targetAverageUtilization: 50
+  targetCPUUtilizationPercentage: 10
