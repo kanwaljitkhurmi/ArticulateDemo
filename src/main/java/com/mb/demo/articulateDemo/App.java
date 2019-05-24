@@ -45,7 +45,7 @@ public class App {
   
   @Bean
   public Filter TracingFilter() {
-    return new AWSXRayServletFilter("General");
+    return new AWSXRayServletFilter("services");
   }
   
 //  @Bean

@@ -1,9 +1,15 @@
 package com.mb.demo.articulateDemo.controller;
 
 import com.amazonaws.xray.AWSXRay;
+import com.amazonaws.xray.entities.Subsegment;
+import com.amazonaws.xray.spring.aop.AbstractXRayInterceptor;
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.mb.demo.articulateDemo.model.Attendee;
 import com.mb.demo.articulateDemo.service.AttendeeService;
 import com.mb.demo.articulateDemo.service.EnvironmentHelper;
+
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -25,132 +31,125 @@ import java.util.concurrent.TimeUnit;
 @Controller
 public class ArticulateController {
 
-  private static final Logger logger = LoggerFactory.getLogger(ArticulateController.class);
 
-  private final AttendeeService attendeeService;
-  private final EnvironmentHelper environmentHelper;
+	private static final Logger logger = LoggerFactory.getLogger(ArticulateController.class);
 
-  public ArticulateController(AttendeeService attendeeService, EnvironmentHelper environmentHelper) {
-    this.attendeeService = attendeeService;
-    this.environmentHelper = environmentHelper;
-  }
+	private final AttendeeService attendeeService;
+	private final EnvironmentHelper environmentHelper;
 
-  @RequestMapping("/")
-  public String index(HttpServletRequest request, Model model) throws Exception {
-    addAppEnv(request, model);
-    return "index";
-  }
-  
-  @RequestMapping("/svc")
-  @ResponseBody
-  public ResponseEntity svc(HttpServletRequest request, Model model) throws Exception {
-    addAppEnv(request, model);
-    for(int i=0;i<100000;i++) {
-    	System.out.println("Testing data");
-    }
-    
+	public ArticulateController(AttendeeService attendeeService, EnvironmentHelper environmentHelper) {
+		this.attendeeService = attendeeService;
+		this.environmentHelper = environmentHelper;
+	}
 
-    
-    return new ResponseEntity("All OK", HttpStatus.OK);
-  }
+	@RequestMapping("/")
+	public String index(HttpServletRequest request, Model model) throws Exception {
+		addAppEnv(request, model);
+		return "index";
+	}
 
-  @RequestMapping(value = "/basics", method = RequestMethod.GET)
-  public String kill(HttpServletRequest request,
-                     @RequestParam(value = "doit", required = false) boolean doit,
-                     Model model) throws Exception {
-	  AWSXRay.getCurrentSegment().setUser("UserAWS");
-    addAppEnv(request, model);
+	@RequestMapping("/svc")
+	@ResponseBody
+	public ResponseEntity svc(HttpServletRequest request, Model model) throws Exception {
+		addAppEnv(request, model);
+		for (int i = 0; i < 100000; i++) {
+			System.out.println("Testing data");
+		}
 
-    if (doit) {
-      model.addAttribute("killed", true);
-      logger.warn("*** The system is shutting down. ***");
-      Runnable killTask = () -> {
-        try {
-          String name = Thread.currentThread().getName();
-          logger.warn("killing shortly " + name);
-          TimeUnit.SECONDS.sleep(5);
-          logger.warn("killed " + name);
-          System.exit(0);
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-        }
-      };
-      new Thread(killTask).start();
-    }
+		return new ResponseEntity("All OK", HttpStatus.OK);
+	}
 
-    return "basics";
+	@RequestMapping(value = "/basics", method = RequestMethod.GET)
+	public String kill(HttpServletRequest request, @RequestParam(value = "doit", required = false) boolean doit,
+			Model model) throws Exception {
+		AWSXRay.getCurrentSegment().setUser("UserAWS");
+		addAppEnv(request, model);
 
-  }
+		if (doit) {
+			model.addAttribute("killed", true);
+			logger.warn("*** The system is shutting down. ***");
+			Runnable killTask = () -> {
+				try {
+					String name = Thread.currentThread().getName();
+					logger.warn("killing shortly " + name);
+					TimeUnit.SECONDS.sleep(5);
+					logger.warn("killed " + name);
+					System.exit(0);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			};
+			new Thread(killTask).start();
+		}
 
-  @RequestMapping(value = "/services", method = RequestMethod.GET)
-  public String attendees(HttpServletRequest request, Model model) throws Exception {
+		return "basics";
 
-    model.addAttribute("attendees", attendeeService.getAttendees());
-    model = clearAttendeeFormData(model);
+	}
 
-    addAppEnv(request, model);
-    return "services";
-  }
+	@RequestMapping(value = "/services", method = RequestMethod.GET)
+	public String attendees(HttpServletRequest request, Model model) throws Exception {
+		AWSXRay.beginSegment("services");
+		model.addAttribute("attendees", attendeeService.getAttendees());
+		model = clearAttendeeFormData(model);
 
-  @RequestMapping(value = "/add-attendee", method = RequestMethod.POST)
-  public String addAttendee(HttpServletRequest request,
-                            @RequestParam("firstName") String firstName,
-                            @RequestParam("lastName") String lastName,
-                            @RequestParam("emailAddress") String emailAddress,
-                            Model model) throws Exception {
+		addAppEnv(request, model);
+		AWSXRay.endSegment();
+		return "services";
+	}
 
-	  
-	  Attendee attendee = new Attendee();
-	  attendee.setEmailAddress(emailAddress);
-	  attendee.setFirstName(firstName);
-	  attendee.setLastName(lastName);
-   
+	@RequestMapping(value = "/add-attendee", method = RequestMethod.POST)
+	public String addAttendee(HttpServletRequest request, @RequestParam("firstName") String firstName,
+			@RequestParam("lastName") String lastName, @RequestParam("emailAddress") String emailAddress, Model model)
+			throws Exception {
 
-    boolean addFailed = false;
-    try {
-      attendeeService.add(attendee);
-    } catch (Exception e) {
-      addFailed = true;
-      logger.error("Failed to add attendee.", e);
-    }
+		Attendee attendee = new Attendee();
+		attendee.setEmailAddress(emailAddress);
+		attendee.setFirstName(firstName);
+		attendee.setLastName(lastName);
 
-    model.addAttribute("addFailed", addFailed);
+		boolean addFailed = false;
+		try {
+			attendeeService.add(attendee);
+		} catch (Exception e) {
+			addFailed = true;
+			logger.error("Failed to add attendee.", e);
+		}
 
-    if (addFailed) {
-      model.addAttribute("firstName", firstName);
-      model.addAttribute("lastName", lastName);
-      model.addAttribute("emailAddress", emailAddress);
-    } else {
-      model = clearAttendeeFormData(model);
-    }
+		model.addAttribute("addFailed", addFailed);
 
-    model.addAttribute("attendees", attendeeService.getAttendees());
-    addAppEnv(request, model);
+		if (addFailed) {
+			model.addAttribute("firstName", firstName);
+			model.addAttribute("lastName", lastName);
+			model.addAttribute("emailAddress", emailAddress);
+		} else {
+			model = clearAttendeeFormData(model);
+		}
 
-    return "services";
-  }
+		model.addAttribute("attendees", attendeeService.getAttendees());
+		addAppEnv(request, model);
 
+		return "services";
+	}
 
-  private Model clearAttendeeFormData(Model model) {
-    model.addAttribute("firstName", "");
-    model.addAttribute("lastName", "");
-    model.addAttribute("emailAddress", "");
-    return model;
-  }
+	private Model clearAttendeeFormData(Model model) {
+		model.addAttribute("firstName", "");
+		model.addAttribute("lastName", "");
+		model.addAttribute("emailAddress", "");
+		return model;
+	}
 
-  @RequestMapping("/bluegreen")
-  public String bluegreen(HttpServletRequest request, Model model) throws Exception {
-    for (String key : System.getenv().keySet()) {
-      System.out.println(key + ":" + System.getenv(key));
-    }
-    addAppEnv(request, model);
-    return "bluegreen";
-  }
+	@RequestMapping("/bluegreen")
+	public String bluegreen(HttpServletRequest request, Model model) throws Exception {
+		for (String key : System.getenv().keySet()) {
+			System.out.println(key + ":" + System.getenv(key));
+		}
+		addAppEnv(request, model);
+		return "bluegreen";
+	}
 
-
-  private void addAppEnv(HttpServletRequest request, Model model) throws Exception {
-    Map<String, Object> modelMap = environmentHelper.addAppEnv(request);
-    model.addAllAttributes(modelMap);
-  }
+	private void addAppEnv(HttpServletRequest request, Model model) throws Exception {
+		Map<String, Object> modelMap = environmentHelper.addAppEnv(request);
+		model.addAllAttributes(modelMap);
+	}
 
 }
