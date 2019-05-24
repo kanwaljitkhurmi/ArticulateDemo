@@ -99,11 +99,12 @@ public class ArticulateController {
                             @RequestParam("emailAddress") String emailAddress,
                             Model model) throws Exception {
 
-    Attendee attendee = Attendee.builder()
-        .firstName(firstName)
-        .lastName(lastName)
-        .emailAddress(emailAddress)
-        .build();
+	  
+	  Attendee attendee = new Attendee();
+	  attendee.setEmailAddress(emailAddress);
+	  attendee.setFirstName(firstName);
+	  attendee.setLastName(lastName);
+   
 
     boolean addFailed = false;
     try {
