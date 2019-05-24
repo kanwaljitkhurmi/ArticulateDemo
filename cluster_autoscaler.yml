@@ -76,7 +76,7 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: z
+  name: cluster-autoscaler
 subjects:
   - kind: ServiceAccount
     name: cluster-autoscaler
