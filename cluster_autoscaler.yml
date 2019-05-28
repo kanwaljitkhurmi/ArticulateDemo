@@ -135,10 +135,10 @@ spec:
             - --stderrthreshold=info
             - --cloud-provider=aws
             - --skip-nodes-with-local-storage=false
-            - --nodes=2:8:eksctl-ekscluster-demo1-nodegroup-ng-7b306af6-NodeGroup-CGGDV7VFOPXK
+            - --nodes=2:8:eksctl-ekscluster-demo-nodegroup-ng-bc440445-NodeGroup-6M7XJIXMCKPJ
           env:
             - name: AWS_REGION
-              value: us-east-2
+              value: us-east-1
           volumeMounts:
             - name: ssl-certs
               mountPath: /etc/ssl/certs/ca-certificates.crt
