@@ -20,8 +20,7 @@
 
 		<div class="row">
 			<div class="col-md-12">
-				<p>Ok, you have the application running. Now let's understand
-					some of the basic capabilities you get with every application running in Kubernetes.</p>
+				<p>Ok, you have the application running. </p>
 			</div>
 
 		</div>
@@ -56,10 +55,7 @@
 				<div th:if="${killed} == null" class="panel panel-default">
 					<div class="panel-body">
 						<div class="alert alert-danger" role="alert">
-							<b>Attention!</b> Before clicking on <i><b>kill</b></i> you may
-							want to ensure you have at least 2 application instances (HA)
-							configured. Otherwise be ready to wait a minute or so until EKS
-							auto-recovers the application.
+							<b>Attention!</b> Please click on <i><b>kill</b></i> to kill the running container. 
 						</div>
 						<p>The application instance and container showed is not the
 							one necessarily being killed (unless you have one instance, of
