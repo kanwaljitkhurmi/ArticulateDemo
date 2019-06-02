@@ -19,6 +19,6 @@ public class XRayInspector extends AbstractXRayInterceptor {
     }    
   
   @Override    
-  @Pointcut("@within(com.amazonaws.xray.spring.aop.XRayEnabled)")    
+  @Pointcut("execution(* com.mb.demo.articulateDemo.controller.ArticulateController.*(..)")    
   public void xrayEnabledClasses() {}
 }
