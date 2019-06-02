@@ -3,7 +3,6 @@ import java.util.Map;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +18,6 @@ public class XRayInspector extends AbstractXRayInterceptor {
     }    
   
   @Override    
-  @Pointcut("execution(* com.mb.demo.articulateDemo.controller.ArticulateController.*(..)")    
+  @Pointcut("execution(* com.mb.demo.articulateDemo.controller.ArticulateController.*(..))")    
   public void xrayEnabledClasses() {}
 }
