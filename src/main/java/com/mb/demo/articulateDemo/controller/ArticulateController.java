@@ -1,9 +1,7 @@
 package com.mb.demo.articulateDemo.controller;
 
 import com.amazonaws.xray.AWSXRay;
-import com.amazonaws.xray.entities.Subsegment;
-import com.amazonaws.xray.spring.aop.AbstractXRayInterceptor;
-import com.amazonaws.xray.spring.aop.XRayEnabled;
+
 import com.mb.demo.articulateDemo.model.Attendee;
 import com.mb.demo.articulateDemo.service.AttendeeService;
 import com.mb.demo.articulateDemo.service.EnvironmentHelper;
@@ -29,7 +27,6 @@ import java.util.concurrent.TimeUnit;
  * @author mborges
  */
 @Controller
-@XRayEnabled
 public class ArticulateController {
 
 

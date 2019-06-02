@@ -1,6 +1,5 @@
 package com.mb.demo.articulateDemo;
 
-import com.amazonaws.xray.javax.servlet.AWSXRayServletFilter;
 import com.amazonaws.xray.strategy.DynamicSegmentNamingStrategy;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
