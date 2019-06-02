@@ -1,7 +1,5 @@
 package com.mb.demo.articulateDemo.controller;
 
-import com.amazonaws.xray.AWSXRay;
-
 import com.mb.demo.articulateDemo.model.Attendee;
 import com.mb.demo.articulateDemo.service.AttendeeService;
 import com.mb.demo.articulateDemo.service.EnvironmentHelper;
@@ -65,7 +63,7 @@ logger.info("Initiating sys controller");
 	@RequestMapping(value = "/basics", method = RequestMethod.GET)
 	public String kill(HttpServletRequest request, @RequestParam(value = "doit", required = false) boolean doit,
 			Model model) throws Exception {
-		AWSXRay.getCurrentSegment().setUser("UserAWS");
+		
 		addAppEnv(request, model);
 
 		if (doit) {
@@ -94,12 +92,12 @@ logger.info("Initiating sys controller");
 
 	@RequestMapping(value = "/services", method = RequestMethod.GET)
 	public String attendees(HttpServletRequest request, Model model) throws Exception {
-		AWSXRay.beginSegment("services");
+		
 		model.addAttribute("attendees", attendeeService.getAttendees());
 		model = clearAttendeeFormData(model);
 
 		addAppEnv(request, model);
-		AWSXRay.endSegment();
+	
 		
 		System.out.println("Initiating sys attendees");
 		logger.info("Initiating sys attendees");
