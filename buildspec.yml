@@ -7,8 +7,8 @@ phases:
       java: openjdk8
     commands: 
       - mvn --version
+      - git --version
       - apt-get update -y
-      - apt-get install -y maven
       - curl -o aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.12.7/2019-03-27/bin/linux/amd64/aws-iam-authenticator
       - curl -o kubectl https://amazon-eks.s3-us-west-2.amazonaws.com/1.12.7/2019-03-27/bin/linux/amd64/kubectl
       - chmod +x ./kubectl ./aws-iam-authenticator
