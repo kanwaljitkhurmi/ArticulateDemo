@@ -41,6 +41,8 @@ public class ArticulateController {
 	public ArticulateController(AttendeeService attendeeService, EnvironmentHelper environmentHelper) {
 		this.attendeeService = attendeeService;
 		this.environmentHelper = environmentHelper;
+		System.out.println("Initiating sys controller");
+logger.info("Initiating sys controller");
 	}
 
 	@RequestMapping("/")
@@ -56,6 +58,9 @@ public class ArticulateController {
 		for (int i = 0; i < 100000; i++) {
 			System.out.println("Testing data");
 		}
+		
+		System.out.println("Initiating sys svc");
+		logger.info("Initiating sys svc");
 
 		return new ResponseEntity("All OK", HttpStatus.OK);
 	}
@@ -82,6 +87,9 @@ public class ArticulateController {
 			};
 			new Thread(killTask).start();
 		}
+		
+		System.out.println("Initiating sys kill controller");
+		logger.info("Initiating sys kill controller");
 
 		return "basics";
 
@@ -95,6 +103,10 @@ public class ArticulateController {
 
 		addAppEnv(request, model);
 		AWSXRay.endSegment();
+		
+		System.out.println("Initiating sys attendees");
+		logger.info("Initiating sys attendees");
+		
 		return "services";
 	}
 

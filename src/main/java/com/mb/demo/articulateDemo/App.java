@@ -43,10 +43,10 @@ public class App {
 //	    return new AWSXRayServletFilter(new DynamicSegmentNamingStrategy("Index", "/"));
 //  }
   
-  @Bean
-  public Filter TracingFilter() {
-    return new AWSXRayServletFilter("services");
-  }
+//  @Bean
+//  public Filter TracingFilter() {
+//    return new AWSXRayServletFilter("services");
+//  }
   
 //  @Bean
 //  public Filter TracingFilterService() {
